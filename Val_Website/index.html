@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Valentine Match 💖</title>
+
+  <style>
+    :root {
+      --pink: #ffd6e8;
+      --blue: #d9f1ff;
+      --mc-red: #db0007;
+      --mc-yellow: #ffc300;
+      --soft: #fff6fb;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "Poppins", system-ui, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, var(--pink), var(--blue));
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #444;
+    }
+
+    .screen {
+      display: none;
+      max-width: 400px;
+      width: 100%;
+      padding: 20px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1rem;
+      opacity: 0.85;
+    }
+
+    /* 🍟 McDonald's Bowl */
+    .bowl {
+      position: relative;
+      margin: 0px auto;
+      width: 350px;
+      height: 250px;
+      background: var(--mc-red);
+      border-radius: 0 0 160px 160px;
+      box-shadow: inset 0 -12px 0 rgba(0,0,0,0.15),
+                  0 12px 30px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+
+    /* White rim */
+    .bowl::before {
+      content: "";
+      position: absolute;
+      top: -14px;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      background: white;
+      border-radius: 50%;
+      z-index: 2;
+    }
+
+    /* Golden arches */
+    .arches {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 72px;
+      font-weight: 900;
+      color: var(--mc-yellow);
+      opacity: 0.95;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Elephants inside bowl */
+    .elephants {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      width: 100%;
+      height: 150px;
+      padding: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      align-content: flex-start;
+      z-index: 3;
+    }
+
+    .elephant {
+      font-size: 2rem;
+      background: var(--soft);
+      border-radius: 14px;
+      padding: 8px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    .elephant:hover {
+      transform: scale(1.15);
+    }
+
+    .matched {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Buttons */
+    button {
+      margin-top: 20px;
+      background: #ff4d6d;
+      border: none;
+      padding: 14px 26px;
+      border-radius: 999px;
+      font-size: 1rem;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
+    button.secondary {
+      background: #999;
+    }
+
+    /* 🍟 Confetti Fries */
+    .confetti {
+    position: fixed;
+    top: -20px;
+    font-size: 1.8rem;
+    animation: fall 3s linear forwards;
+    pointer-events: none;
+    z-index: 999;
+    }
+
+    @keyframes fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(120vh) rotate(360deg);
+        opacity: 0;
+    }
+    }
+
+    /* Elephant pair backgrounds */
+    .pink {
+    background: #ffe3f1 !important;
+    }
+
+    .blue {
+    background: #e3f3ff !important;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- MATCH GAME -->
+  <div id="game" class="screen active">
+    <h1>Match the Elephants 🐘💖</h1>
+    <p>Match all pairs to unlock a very important question…</p>
+
+    <div class="bowl">
+      <div class="elephants" id="elephants"></div>
+      <div class="arches">M</div>
+    </div>
+  </div>
+
+  <!-- QUESTION -->
+  <div id="question" class="screen">
+    <h1>Okay… moment of truth 💕</h1>
+    <p>Will you be my Boolentine?</p>
+
+    <div>
+        <img src="rosecat.gif" alt="roseCat" style="width:200px;height:200px;">
+    </div>
+
+    <button onclick="yes()">Yes, obviously 💖</button><br/>
+    <button class="secondary" onclick="no()">No 😐</button>
+  </div>
+
+  <!-- WRONG ANSWER -->
+  <div id="wrong" class="screen">
+    <h1>🚨 Wrong Answer 🚨</h1>
+    <p>
+      That option was clearly for decoration purposes only.<br/>
+      Please get your brain checked 😌
+    </p>
+
+    <div>
+        <img src="guncat.gif" alt="gunCat" style="width:200px;height:200px;">
+    </div>
+
+    <button onclick="back()">Try Again 💕</button>
+  </div>
+
+  <!-- SUCCESS -->
+  <div id="yes" class="screen">
+    <h1>YAYYYYY 🥹💖</h1>
+    <p>Best decision ever made.</p>
+    <div style="font-size:3rem;">🐘🍟🐘🍟🐘</div>
+    <img src="happyCat.gif" alt="happyCat" style="width:300px;height:200px;">
+  </div>
+
+<script>
+  const TOTAL_ELEPHANTS = 8;
+  const COLORS = ["pink", "blue"];
+
+  let first = null;
+  let lock = false;
+  let matched = 0;
+
+  const container = document.getElementById("elephants");
+
+  function shuffle(arr) {
+    return arr.sort(() => Math.random() - 0.5);
+  }
+
+  // Build elephants: 4 pink, 4 blue
+  let elephants = [];
+  for (let i = 0; i < TOTAL_ELEPHANTS / 2; i++) {
+    elephants.push("pink");
+    elephants.push("blue");
+  }
+
+  shuffle(elephants).forEach(color => {
+    const div = document.createElement("div");
+    div.className = `elephant ${color}`;
+    div.textContent = "🐘";
+    div.dataset.color = color;
+    div.onclick = () => select(div);
+    container.appendChild(div);
+  });
+
+  function select(el) {
+    if (lock || el.classList.contains("matched")) return;
+
+    el.style.transform = "scale(1.2)";
+
+    if (!first) {
+      first = el;
+    } else {
+      lock = true;
+
+      setTimeout(() => {
+        if (first.dataset.color === el.dataset.color) {
+          first.classList.add("matched");
+          el.classList.add("matched");
+          matched += 2;
+
+          if (matched === TOTAL_ELEPHANTS) {
+            friesConfetti();
+            setTimeout(() => show("question"), 800);
+          }
+        } else {
+          first.style.transform = "scale(1)";
+          el.style.transform = "scale(1)";
+        }
+
+        first = null;
+        lock = false;
+      }, 500);
+    }
+  }
+
+  /* 🍟 McDonald's-style confetti fries */
+  function friesConfetti() {
+    for (let i = 0; i < 40; i++) {
+      const fry = document.createElement("div");
+      fry.className = "confetti";
+      fry.textContent = "🍟";
+      fry.style.left = Math.random() * 100 + "vw";
+      fry.style.animationDuration = 2 + Math.random() * 2 + "s";
+      document.body.appendChild(fry);
+
+      setTimeout(() => fry.remove(), 4000);
+    }
+  }
+
+  function show(id) {
+    document.querySelectorAll(".screen").forEach(s =>
+      s.classList.remove("active")
+    );
+    document.getElementById(id).classList.add("active");
+  }
+
+  function yes() {
+    friesConfetti();
+    show("yes");
+  }
+
+  function no() {
+    show("wrong");
+  }
+
+  function back() {
+    show("question");
+  }
+</script>
+
+</body>
+</html>
